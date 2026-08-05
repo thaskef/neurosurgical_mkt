@@ -7,6 +7,14 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; }
+#app { display: none; }
+#gate { display: flex; align-items: center; justify-content: center; height: 100vh; background: #1a1a2e; }
+#gate div { text-align: center; }
+#gate h1 { font-size: 28px; margin-bottom: 8px; color: #e94560; }
+#gate p { color: #888; font-size: 13px; margin-bottom: 20px; }
+#gate input { background: #0f3460; color: #eee; border: 1px solid #1a508b; padding: 12px 18px; font-size: 16px; border-radius: 5px; width: 260px; text-align: center; outline: none; }
+#gate input:focus { border-color: #e94560; }
+#gate .err { color: #e94560; font-size: 12px; margin-top: 8px; display: none; }
 nav { background: #16213e; display: flex; flex-wrap: wrap; gap: 2px; padding: 8px; position: sticky; top: 0; z-index: 10; align-items: center; }
 nav select { background: #0f3460; color: #eee; border: 1px solid #1a508b; padding: 8px 12px; font-size: 13px; border-radius: 5px; margin-right: 8px; cursor: pointer; }
 nav select:focus { outline: none; border-color: #e94560; }
@@ -21,6 +29,16 @@ nav button.active { background: #e94560; color: #fff; font-weight: 600; }
 </head>
 <body>
 
+<div id="gate">
+  <div>
+    <h1>Neurosurgery Deck</h1>
+    <p>Enter password to view figures</p>
+    <input type="password" id="pw" placeholder="Password" autofocus onkeydown="if(event.key==='Enter')tryAuth()">
+    <div class="err" id="err">Incorrect password</div>
+  </div>
+</div>
+
+<div id="app">
 <nav>
   <select id="mode" onchange="switchMode()">
     <option value="drugs">Drugs</option>
@@ -34,8 +52,32 @@ nav button.active { background: #e94560; color: #fff; font-weight: 600; }
   <iframe id="viewer" src="fig1_revenue_bars.html?v=5"></iframe>
   <div class="counter" id="counter">1 / 6</div>
 </div>
+</div>
 
 <script>
+// ── Password gate ──
+const PW_HASH = 'd42e821035b7233cf2c8f616554a9c6fd3fdfba0530f3ba8fecda21f945d6c8b';
+const encoder = new TextEncoder();
+
+async function sha256hex(text) {
+  const buf = await crypto.subtle.digest('SHA-256', encoder.encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function tryAuth() {
+  const input = document.getElementById('pw').value;
+  const hash = await sha256hex(input);
+  if (hash === PW_HASH) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('err').style.display = 'block';
+    document.getElementById('pw').value = '';
+  }
+}
+
+// ── Figure config ──
 const config = {
   drugs: {
     labels: [
@@ -100,14 +142,16 @@ function switchMode() {
 }
 
 // Init
-renderButtons();
+function init() {
+  renderButtons();
 
-// Keyboard nav
-document.addEventListener('keydown', e => {
-  const cfg = config[currentMode];
-  if (e.key === 'ArrowRight' && currentIdx < cfg.files.length - 1) show(currentIdx + 1);
-  if (e.key === 'ArrowLeft' && currentIdx > 0) show(currentIdx - 1);
-});
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    const cfg = config[currentMode];
+    if (e.key === 'ArrowRight' && currentIdx < cfg.files.length - 1) show(currentIdx + 1);
+    if (e.key === 'ArrowLeft' && currentIdx > 0) show(currentIdx - 1);
+  });
+}
 </script>
 </body>
 </html>
