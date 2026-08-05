@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurosurgery Deck — Figures</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; }
+nav { background: #16213e; display: flex; flex-wrap: wrap; gap: 2px; padding: 8px; position: sticky; top: 0; z-index: 10; align-items: center; }
+nav select { background: #0f3460; color: #eee; border: 1px solid #1a508b; padding: 8px 12px; font-size: 13px; border-radius: 5px; margin-right: 8px; cursor: pointer; }
+nav select:focus { outline: none; border-color: #e94560; }
+nav .sep { width: 1px; height: 24px; background: #333; margin: 0 4px; }
+nav button { background: #0f3460; color: #ccc; border: none; padding: 10px 18px; cursor: pointer; font-size: 13px; border-radius: 5px; transition: all 0.15s; }
+nav button:hover { background: #1a508b; color: #fff; }
+nav button.active { background: #e94560; color: #fff; font-weight: 600; }
+.frame-wrap { position: relative; width: 100%; height: calc(100vh - 52px); overflow: hidden; }
+.frame-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+.counter { position: absolute; top: 10px; right: 16px; background: rgba(0,0,0,0.7); color: #aaa; font-size: 11px; padding: 4px 10px; border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <select id="mode" onchange="switchMode()">
+    <option value="drugs">Drugs</option>
+    <option value="devices">Devices</option>
+  </select>
+  <span class="sep"></span>
+  <span id="buttons"></span>
+</nav>
+
+<div class="frame-wrap">
+  <iframe id="viewer" src="fig1_revenue_bars.html?v=5"></iframe>
+  <div class="counter" id="counter">1 / 6</div>
+</div>
+
+<script>
+const config = {
+  drugs: {
+    labels: [
+      '1. Revenue Bars',
+      '2. Incidence vs Growth',
+      '3. Pipeline Intensity',
+      '4. Company Matrix',
+      '5. Ownership Profile',
+      '6. Capital Table'
+    ],
+    files: [
+      'fig1_revenue_bars.html?v=5',
+      'fig2_bubble.html?v=4',
+      'fig3_pipeline_intensity.html?v=4',
+      'fig4_company_matrix.html?v=4',
+      'fig5_ownership_profile.html?v=4',
+      'fig6_capital_map.html?v=4'
+    ]
+  },
+  devices: {
+    labels: [
+      '1. Device Pipeline',
+      '2. Equipment Heatmap',
+      '3. Ownership Profile',
+      '4. Launch Timeline',
+      '5. Regulatory Pathway'
+    ],
+    files: [
+      'fig7_devices_pipeline.html?v=1',
+      'fig8_device_equipment_heatmap.html?v=1',
+      'fig9_device_ownership.html?v=1',
+      'fig10_device_timeline.html?v=1',
+      'fig11_regulatory_pathway.html?v=1'
+    ]
+  }
+};
+
+let currentMode = 'drugs';
+let currentIdx = 0;
+
+function renderButtons() {
+  const cfg = config[currentMode];
+  const container = document.getElementById('buttons');
+  container.innerHTML = cfg.labels.map((l, i) =>
+    '<button class="' + (i === currentIdx ? 'active' : '') + '" onclick="show(' + i + ')">' + l + '</button>'
+  ).join('');
+}
+
+function show(n) {
+  currentIdx = n;
+  const cfg = config[currentMode];
+  document.querySelectorAll('#buttons button').forEach((b, i) => b.classList.toggle('active', i === n));
+  document.getElementById('viewer').src = cfg.files[n];
+  document.getElementById('counter').textContent = (n + 1) + ' / ' + cfg.files.length;
+}
+
+function switchMode() {
+  currentMode = document.getElementById('mode').value;
+  currentIdx = 0;
+  renderButtons();
+  show(0);
+}
+
+// Init
+renderButtons();
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  const cfg = config[currentMode];
+  if (e.key === 'ArrowRight' && currentIdx < cfg.files.length - 1) show(currentIdx + 1);
+  if (e.key === 'ArrowLeft' && currentIdx > 0) show(currentIdx - 1);
+});
+</script>
+</body>
+</html>
