@@ -2,7 +2,7 @@
 <html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 20px; background: #f8f9fa; }
+body { padding-bottom: 88px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 20px; background: #f8f9fa; }
 h1 { color: #333; font-size: 20px; margin-bottom: 4px; }
 .subtitle { color: #888; font-size: 13px; margin-bottom: 16px; }
 table { border-collapse: collapse; width: 100%; background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
@@ -12,7 +12,24 @@ tr:hover { background: #f0f4ff; }
 .stage-legend { display: flex; gap: 12px; margin: 12px 0; font-size: 11px; align-items: center; flex-wrap: wrap; }
 .stage-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
 .indications { color: #555; font-size: 11px; line-height: 1.5; }
-</style></head>
+</style><style>
+.insight-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 72px;
+  background: #16213e;
+  border-top: 1px solid #2a3a5c;
+  display: flex; align-items: center; padding: 0 16px;
+  z-index: 100;
+}
+.insight-bar .label {
+  color: #e94560; font-size: 11px; font-weight: 700; text-transform: uppercase;
+  margin-right: 12px; white-space: nowrap; letter-spacing: 0.5px;
+}
+.insight-bar .text {
+  color: #bbb; font-size: 12px; line-height: 1.4;
+}
+</style>
+</head>
 <body>
 <h1>Company Capital & Pipeline by Neurosurgery Indication</h1>
 <p class="subtitle">Capital raised is <b>company-level</b> (not drug-specific). Independent &amp; joint venture companies only. Excludes large pharma (&gt;$1B revenue).<br>
@@ -688,4 +705,6 @@ Showing 93 companies across 26 indications.</p>
     <td style="background:#d73027;color:white;font-weight:600;text-align:center;white-space:nowrap">Preclin/Disc</td>
     <td class="indications">Glioblastoma Multiforme (GBM)</td>
 </tr>
-</tbody></table></body></html>
+</tbody></table>
+<div class="insight-bar"><span class="label">Insights</span><span class="text">Of 553 independent companies active in neurosurgery-adjacent indications, only 89 have publicly disclosed capital raised within the past three years, totaling approximately $7B. The top ten companies account for half of that total, and capital is concentrated in GBM and neuro-oncology. The median capital raised among the 89 companies with disclosed figures is approximately $20M.</span></div>
+</body></html>
