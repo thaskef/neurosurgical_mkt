@@ -52,14 +52,15 @@ nav button.active { background: #e94560; color: #fff; font-weight: 600; }
 </nav>
 
 <div class="frame-wrap">
-  <iframe id="viewer" src="fig1_combined.html?v=11"></iframe>
-  <div class="counter" id="counter">1 / 6</div>
+  <iframe id="viewer" src="fig1_combined.html?v=13"></iframe>
+  <div class="counter" id="counter">1 / 7</div>
 </div>
 </div>
 
 <script>
 // ── Password gate ──
 const PW_HASH = 'd42e821035b7233cf2c8f616554a9c6fd3fdfba0530f3ba8fecda21f945d6c8b';
+const STORAGE_KEY = 'neuro_deck_auth';
 const encoder = new TextEncoder();
 
 async function sha256hex(text) {
@@ -71,6 +72,7 @@ async function tryAuth() {
   const input = document.getElementById('pw').value;
   const hash = await sha256hex(input);
   if (hash === PW_HASH) {
+    localStorage.setItem(STORAGE_KEY, hash);
     document.getElementById('gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     init();
@@ -80,27 +82,37 @@ async function tryAuth() {
   }
 }
 
+// Auto-login if previously authenticated
+(function() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved === PW_HASH) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    init();
+  }
+})();
+
 // ── Figure config ──
-const V = '13'; // cache buster version
+const V = '14'; // cache buster version
 
 const drugCfg = {
   labels: [
     '1. Revenue Bars',
-    '1b. Drug Growth',
-    '2. Incidence vs Growth',
-    '3. Pipeline Intensity',
-    '4. Company Matrix',
-    '5. Ownership Profile',
-    '6. Capital Table'
+    '2. Drug Growth',
+    '3. Incidence vs Growth',
+    '4. Pipeline Intensity',
+    '5. Company Matrix',
+    '6. Ownership Profile',
+    '7. Capital Table'
   ],
   files: [
     'fig1_combined.html?v=' + V,
-    'fig1b_drug_growth.html?v=' + V,
-    'fig2_combined.html?v=' + V,
-    'fig3_pipeline_intensity.html?v=' + V,
-    'fig4_company_matrix.html?v=' + V,
-    'fig5_ownership_profile.html?v=' + V,
-    'fig6_capital_map.html?v=' + V
+    'fig2_drug_growth.html?v=' + V,
+    'fig3_combined.html?v=' + V,
+    'fig4_pipeline_intensity.html?v=' + V,
+    'fig5_company_matrix.html?v=' + V,
+    'fig6_ownership_profile.html?v=' + V,
+    'fig7_capital_map.html?v=' + V
   ]
 };
 
