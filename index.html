@@ -82,23 +82,21 @@ async function tryAuth() {
   }
 }
 // ── Figure config ──
-const V = '18'; // cache buster version
+const V = '19'; // cache buster version
 
 const drugCfg = {
   labels: [
     '1. Revenue Bars',
     '2. Drug Growth',
     '3. Incidence vs Growth',
-    '4. Pipeline Intensity',
-    '5. Company Matrix',
-    '6. Ownership Profile',
-    '7. Capital Table'
+    '4. Company Matrix',
+    '5. Ownership Profile',
+    '6. Capital Table'
   ],
   files: [
     'fig1_combined.html?v=' + V,
     'fig2_drug_growth.html?v=' + V,
     'fig3_combined.html?v=' + V,
-    'fig4_pipeline_intensity.html?v=' + V,
     'fig5_company_matrix.html?v=' + V,
     'fig6_ownership_profile.html?v=' + V,
     'fig7_capital_map.html?v=' + V
