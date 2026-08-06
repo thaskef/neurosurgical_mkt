@@ -81,11 +81,12 @@ async function tryAuth() {
 }
 
 // ── Figure config ──
-const V = '12'; // cache buster version
+const V = '13'; // cache buster version
 
 const drugCfg = {
   labels: [
     '1. Revenue Bars',
+    '1b. Drug Growth',
     '2. Incidence vs Growth',
     '3. Pipeline Intensity',
     '4. Company Matrix',
@@ -94,6 +95,7 @@ const drugCfg = {
   ],
   files: [
     'fig1_combined.html?v=' + V,
+    'fig1b_drug_growth.html?v=' + V,
     'fig2_combined.html?v=' + V,
     'fig3_pipeline_intensity.html?v=' + V,
     'fig4_company_matrix.html?v=' + V,
