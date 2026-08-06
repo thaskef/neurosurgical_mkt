@@ -81,19 +81,8 @@ async function tryAuth() {
     document.getElementById('pw').value = '';
   }
 }
-
-// Auto-login if previously authenticated
-(function() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved === PW_HASH) {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    init();
-  }
-})();
-
 // ── Figure config ──
-const V = '15'; // cache buster version
+const V = '16'; // cache buster version
 
 const drugCfg = {
   labels: [
@@ -179,6 +168,16 @@ function init() {
     if (e.key === 'ArrowLeft' && currentIdx > 0) show(currentIdx - 1);
   });
 }
+
+// Auto-login if previously authenticated (must run after all declarations)
+(function() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved === PW_HASH) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    init();
+  }
+})();
 </script>
 </body>
 </html>
