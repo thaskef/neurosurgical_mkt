@@ -47,12 +47,16 @@ nav button.active { background: #e94560; color: #fff; font-weight: 600; }
     <option value="drugs">Drugs</option>
     <option value="devices">Devices</option>
   </select>
+  <select id="scenario" onchange="switchScenario()" style="display:none">
+    <option value="optimistic">Optimistic (Marketed + Phase III + Pre-Reg)</option>
+    <option value="conservative">Conservative (Marketed only)</option>
+  </select>
   <span class="sep"></span>
   <span id="buttons"></span>
 </nav>
 
 <div class="frame-wrap">
-  <iframe id="viewer" src="fig1_revenue_bars.html?v=8"></iframe>
+  <iframe id="viewer" src="fig1_revenue_bars_optimistic.html?v=9"></iframe>
   <div class="counter" id="counter">1 / 6</div>
 </div>
 </div>
@@ -81,52 +85,62 @@ async function tryAuth() {
 }
 
 // ── Figure config ──
-const config = {
-  drugs: {
-    labels: [
-      '1. Revenue Bars',
-      '2. Incidence vs Growth',
-      '3. Pipeline Intensity',
-      '4. Company Matrix',
-      '5. Ownership Profile',
-      '6. Capital Table'
-    ],
-    files: [
-      'fig1_revenue_bars.html?v=8',
-      'fig2_bubble.html?v=8',
-      'fig3_pipeline_intensity.html?v=8',
-      'fig4_company_matrix.html?v=8',
-      'fig5_ownership_profile.html?v=8',
-      'fig6_capital_map.html?v=8'
-    ]
-  },
-  devices: {
-    labels: [
-      '1. Device Pipeline',
-      '2. Equipment Heatmap',
-      '3. Ownership Profile',
-      '4. Launch Timeline',
-      '5. Regulatory Pathway',
-      '6. Market Size',
-      '7. Neuromodulation Segments'
-    ],
-    files: [
-      'fig7_devices_pipeline.html?v=8',
-      'fig8_device_equipment_heatmap.html?v=8',
-      'fig9_device_ownership.html?v=8',
-      'fig10_device_timeline.html?v=8',
-      'fig11_regulatory_pathway.html?v=8',
-      'fig12_device_market_bars.html?v=8',
-      'fig13_neuromodulation_segments.html?v=8'
-    ]
-  }
+const V = '9'; // cache buster version
+
+const baseDrugLabels = [
+  '1. Revenue Bars',
+  '2. Incidence vs Growth',
+  '3. Pipeline Intensity',
+  '4. Company Matrix',
+  '5. Ownership Profile',
+  '6. Capital Table'
+];
+
+// Scenario-dependent figs: index 0 and 1
+function drugFiles(scenario) {
+  const s = '_' + scenario;
+  return [
+    'fig1_revenue_bars' + s + '.html?v=' + V,
+    'fig2_bubble' + s + '.html?v=' + V,
+    'fig3_pipeline_intensity.html?v=' + V,
+    'fig4_company_matrix.html?v=' + V,
+    'fig5_ownership_profile.html?v=' + V,
+    'fig6_capital_map.html?v=' + V
+  ];
+}
+
+const deviceCfg = {
+  labels: [
+    '1. Device Pipeline',
+    '2. Equipment Heatmap',
+    '3. Ownership Profile',
+    '4. Launch Timeline',
+    '5. Regulatory Pathway',
+    '6. Market Size',
+    '7. Neuromodulation Segments'
+  ],
+  files: [
+    'fig7_devices_pipeline.html?v=' + V,
+    'fig8_device_equipment_heatmap.html?v=' + V,
+    'fig9_device_ownership.html?v=' + V,
+    'fig10_device_timeline.html?v=' + V,
+    'fig11_regulatory_pathway.html?v=' + V,
+    'fig12_device_market_bars.html?v=' + V,
+    'fig13_neuromodulation_segments.html?v=' + V
+  ]
 };
 
 let currentMode = 'drugs';
+let currentScenario = 'optimistic';
 let currentIdx = 0;
 
+function getCfg() {
+  if (currentMode === 'devices') return deviceCfg;
+  return { labels: baseDrugLabels, files: drugFiles(currentScenario) };
+}
+
 function renderButtons() {
-  const cfg = config[currentMode];
+  const cfg = getCfg();
   const container = document.getElementById('buttons');
   container.innerHTML = cfg.labels.map((l, i) =>
     '<button class="' + (i === currentIdx ? 'active' : '') + '" onclick="show(' + i + ')">' + l + '</button>'
@@ -135,7 +149,7 @@ function renderButtons() {
 
 function show(n) {
   currentIdx = n;
-  const cfg = config[currentMode];
+  const cfg = getCfg();
   document.querySelectorAll('#buttons button').forEach((b, i) => b.classList.toggle('active', i === n));
   document.getElementById('viewer').src = cfg.files[n];
   document.getElementById('counter').textContent = (n + 1) + ' / ' + cfg.files.length;
@@ -144,17 +158,25 @@ function show(n) {
 function switchMode() {
   currentMode = document.getElementById('mode').value;
   currentIdx = 0;
+  document.getElementById('scenario').style.display = currentMode === 'drugs' ? '' : 'none';
   renderButtons();
   show(0);
+}
+
+function switchScenario() {
+  currentScenario = document.getElementById('scenario').value;
+  renderButtons();
+  show(currentIdx);
 }
 
 // Init
 function init() {
   renderButtons();
+  show(0);
 
   // Keyboard nav
   document.addEventListener('keydown', e => {
-    const cfg = config[currentMode];
+    const cfg = getCfg();
     if (e.key === 'ArrowRight' && currentIdx < cfg.files.length - 1) show(currentIdx + 1);
     if (e.key === 'ArrowLeft' && currentIdx > 0) show(currentIdx - 1);
   });
