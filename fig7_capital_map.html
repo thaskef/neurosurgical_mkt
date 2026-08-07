@@ -2,7 +2,7 @@
 <html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { padding-bottom: 88px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 20px; background: #f8f9fa; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 20px; background: #f8f9fa; }
 h1 { color: #333; font-size: 20px; margin-bottom: 4px; }
 .subtitle { color: #888; font-size: 13px; margin-bottom: 16px; }
 table { border-collapse: collapse; width: 100%; background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
@@ -20,21 +20,40 @@ tr:hover { background: #f0f4ff; }
 
 
 <style>
-.insight-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  height: 72px;
-  background: #0d1b2a;
-  border-top: 1px solid #1a508b;
-  display: flex; align-items: center; padding: 0 20px;
-  z-index: 100;
+.insight-btn {
+  position: fixed; bottom: 16px; right: 20px; z-index: 200;
+  background: #0d1b2a; color: #e94560; border: 1px solid #1a508b;
+  border-radius: 8px; padding: 8px 16px; cursor: pointer;
+  font-size: 13px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
 }
-.insight-bar .label {
-  color: #e94560; font-size: 13px; font-weight: 700; text-transform: uppercase;
-  margin-right: 16px; white-space: nowrap; letter-spacing: 0.5px;
+.insight-btn:hover { background: #1a2d44; border-color: #2a6ab5; color: #ff6b81; }
+.insight-btn .icon { font-size: 16px; font-style: normal; }
+.insight-overlay {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.6); justify-content: center; align-items: center;
 }
-.insight-bar .text {
-  color: #ddd; font-size: 14px; line-height: 1.5;
+.insight-overlay.open { display: flex; }
+.insight-popup {
+  background: #0d1b2a; border: 1px solid #1a508b; border-radius: 10px;
+  max-width: 700px; width: 90%; max-height: 70vh; overflow-y: auto;
+  padding: 24px 28px; box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  position: relative;
 }
+.insight-popup .popup-label {
+  color: #e94560; font-size: 14px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.insight-popup .popup-text {
+  color: #ddd; font-size: 15px; line-height: 1.65;
+}
+.insight-popup .popup-close {
+  position: absolute; top: 10px; right: 14px;
+  background: none; border: none; color: #888; font-size: 22px;
+  cursor: pointer; line-height: 1;
+}
+.insight-popup .popup-close:hover { color: #fff; }
 </style>
 </head>
 <body>
@@ -713,5 +732,12 @@ Showing 93 companies across 26 indications.</p>
     <td class="indications">Glioblastoma Multiforme (GBM)</td>
 </tr>
 </tbody></table>
-<div class="insight-bar"><span class="label">Insights</span><span class="text">Of 553 independent companies active in neurosurgery-adjacent indications, only 89 have publicly disclosed capital raised within the past three years, totaling approximately $7B. The top ten companies account for half of that total, with capital concentrated in GBM and neuro-oncology. The median capital raised among disclosed companies is approximately $20M, suggesting most firms operate with limited institutional funding.</span></div>
+<button class="insight-btn" onclick="document.getElementById('insight-overlay').classList.add('open')"><i class="icon">&#9432;</i> Insights</button>
+<div class="insight-overlay" id="insight-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="insight-popup">
+    <button class="popup-close" onclick="document.getElementById('insight-overlay').classList.remove('open')">&times;</button>
+    <div class="popup-label">Insights</div>
+    <span class="popup-text">Of 553 independent companies active in neurosurgery-adjacent indications, only 89 have publicly disclosed capital raised within the past three years, totaling approximately $7B. The top ten companies account for half of that total, with capital concentrated in GBM and neuro-oncology. The median capital raised among disclosed companies is approximately $20M, suggesting most firms operate with limited institutional funding.</span>
+  </div>
+</div>
 </body></html>
